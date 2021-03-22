@@ -1,4 +1,5 @@
 package crawler.data;
+import crawler.log.Logger;
 import jdk.jshell.spi.ExecutionControl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +30,7 @@ public class WebCrawler {
     private void crawlRecursive(String url, int depth, CrawlResult result) {
         Document doc = null;
         try {
-            System.out.println("Crawling: " + url);
+            Logger.information("Crawling " + url);
             doc = getDocument(url);
             PageCrawlResult pageResult = new PageCrawlResult(url, doc);
             result.merge(pageResult);
@@ -41,7 +42,8 @@ public class WebCrawler {
                 }
             }
         } catch (IOException | IllegalArgumentException e) {
-            e.printStackTrace();
+            Logger.error("Error crawling " + e.getMessage());
+            //ToDo: beautiful exception
         }
     }
 
