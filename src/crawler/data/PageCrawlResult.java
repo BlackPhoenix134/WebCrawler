@@ -45,10 +45,9 @@ public class PageCrawlResult {
 
     private void parse(Document doc) {
         Elements elements = doc.getAllElements();
+        readableTextCount += doc.text().split(" ").length;
         for(Element element  : elements) {
             //ToDo: check if text node
-            System.out.println("Element " + element.text());
-            readableTextCount += element.text().length();
             addContent(element);
         }
     }
