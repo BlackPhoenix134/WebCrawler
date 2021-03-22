@@ -10,8 +10,13 @@ import java.util.List;
 import java.util.Map;
 
 public class PageCrawlResult {
+    private String url;
     private int readableTextCount;
     private Map<String, List<Element>> content = new HashMap<>();
+
+    public String getUrl() {
+        return url;
+    }
 
     public int getReadableTextCount() {
         return readableTextCount;
@@ -21,13 +26,26 @@ public class PageCrawlResult {
         return content;
     }
 
-    public PageCrawlResult(Document doc) {
+    public PageCrawlResult(String url, Document doc) {
+        this.url = url;
         parse(doc);
+    }
+
+    public List<String> getAbsoluteLinks() {
+        List<String> urls = new ArrayList<>();
+        for(Element linkTag : content.get("a")) {
+            String url = linkTag.attr("abs:href");
+            if(!url.contains("#")) {
+                urls.add(url);
+            }
+        }
+        return urls;
     }
 
     private void parse(Document doc) {
         Elements elements = doc.getAllElements();
         for(Element element  : elements) {
+            //ToDo: check if text node
             readableTextCount += element.text().length();
             addContent(element);
         }

@@ -17,7 +17,7 @@ public class WebCrawler {
     }
 
     public CrawlResult start() {
-        return start(2);
+        return start(1);
     }
 
     public CrawlResult start(int depth) {
@@ -31,15 +31,13 @@ public class WebCrawler {
         try {
             System.out.println("Crawling: " + url);
             doc = getDocument(url);
-            PageCrawlResult pageResult = new PageCrawlResult(doc);
+            PageCrawlResult pageResult = new PageCrawlResult(url, doc);
             result.merge(pageResult);
+
             if(depth >= 0) {
-                for(Element linkTag : pageResult.getContent().get("a")) {
-                    //ToDo: dont parse #relative page jumps<
-                    String linkHref = linkTag.attr("abs:href");
-                    if(!linkHref.contains("#")) {
-                        crawlRecursive(linkHref, depth-1, result);
-                    }
+                for(String link : pageResult.getAbsoluteLinks()) {
+                    if(!result.wasVisited(link))
+                        crawlRecursive(link, depth-1, result);
                 }
             }
         } catch (IOException | IllegalArgumentException e) {
