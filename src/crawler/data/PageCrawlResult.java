@@ -4,6 +4,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.sound.midi.Soundbank;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,14 +12,14 @@ import java.util.Map;
 
 public class PageCrawlResult {
     private String url;
-    private int readableTextCount;
+    private long readableTextCount;
     private Map<String, List<Element>> content = new HashMap<>();
 
     public String getUrl() {
         return url;
     }
 
-    public int getReadableTextCount() {
+    public long getReadableTextCount() {
         return readableTextCount;
     }
 
@@ -35,7 +36,7 @@ public class PageCrawlResult {
         List<String> urls = new ArrayList<>();
         for(Element linkTag : content.get("a")) {
             String url = linkTag.attr("abs:href");
-            if(!url.contains("#")) {
+            if(!url.contains("#") && !url.isEmpty()) {
                 urls.add(url);
             }
         }
@@ -46,6 +47,7 @@ public class PageCrawlResult {
         Elements elements = doc.getAllElements();
         for(Element element  : elements) {
             //ToDo: check if text node
+            System.out.println("Element " + element.text());
             readableTextCount += element.text().length();
             addContent(element);
         }
