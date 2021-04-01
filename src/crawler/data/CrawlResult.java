@@ -5,6 +5,7 @@ import org.jsoup.nodes.Element;
 import java.util.*;
 
 public class CrawlResult {
+
     private long readableTextCount;
     private Map<String, List<Element>> content = new HashMap<>();
     private Set<String> visitedPages = new HashSet<>();
