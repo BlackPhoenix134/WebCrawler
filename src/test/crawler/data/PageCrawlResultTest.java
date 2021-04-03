@@ -25,6 +25,6 @@ public class PageCrawlResultTest {
     }
     @Test
     public void TextCountTest() {
-        assertEquals(1, pageCrawlResult.getReadableTextCount());
+        assertEquals(9, pageCrawlResult.getReadableTextCount());
     }
 }
