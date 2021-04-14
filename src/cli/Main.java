@@ -3,22 +3,25 @@ package cli;
 import crawler.data.CrawlResult;
 import crawler.data.WebCrawler;
 import crawler.log.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.function.Function;
+import org.apache.commons.cli.*;
+import org.w3c.dom.xpath.XPathResult;
 
 public class Main {
 
     public static void main(String[] args) {
-	    //write your code here
         Logger.setLogFunction(System.out::println);
-        WebCrawler crawler = new WebCrawler("https://jsoup.org/cookbook/input/load-document-from-url");
-        CrawlResult result = crawler.start();
+        HelpFormatter helpFormatter = new HelpFormatter();
+        CommandLineArgs cliArgs = new CommandLineArgs();
+        try {
+            cliArgs.parse(args);
+            Logger.setLogLevel(cliArgs.getLogLevel());
+            WebCrawler crawler = new WebCrawler(cliArgs.getStartUrl());
+            CrawlResult result = crawler.start(cliArgs.getDepth());
+        } catch (ParseException e) {
+            helpFormatter.printHelp("webcrawler", cliArgs.getOptions());
+        }
+
+
     }
 
     public static void writeLine(String line) {

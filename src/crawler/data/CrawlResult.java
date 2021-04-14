@@ -8,10 +8,15 @@ public class CrawlResult {
 
     private long readableTextCount;
     private Map<String, List<Element>> content = new HashMap<>();
+    private Set<String> notFoundUrls = new HashSet<>();
     private Set<String> visitedPages = new HashSet<>();
 
     public boolean wasVisited(String url) {
         return visitedPages.contains(url);
+    }
+
+    public void addNotFoundUrl(String url) {
+        notFoundUrls.add(url);
     }
 
     public void merge(PageCrawlResult pageResult) {
