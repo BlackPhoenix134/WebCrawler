@@ -37,4 +37,8 @@ public abstract class Logger {
         if(LogLevel > 0)
             logFunction.accept("Error:\t" + message);
     }
+
+    public static void out(String message) {
+        logFunction.accept(message);
+    }
 }

@@ -5,11 +5,26 @@ import org.jsoup.nodes.Element;
 import java.util.*;
 
 public class CrawlResult {
-
     private long readableTextCount;
-    private Map<String, List<Element>> content = new HashMap<>();
-    private Set<String> notFoundUrls = new HashSet<>();
-    private Set<String> visitedPages = new HashSet<>();
+    private final Map<String, List<Element>> content = new HashMap<>();
+    private final Set<String> notFoundUrls = new HashSet<>();
+    private final Set<String> visitedPages = new HashSet<>();
+
+    public long getReadableTextCount() {
+        return readableTextCount;
+    }
+
+    public Map<String, List<Element>> getContent() {
+        return content;
+    }
+
+    public Set<String> getNotFoundUrls() {
+        return notFoundUrls;
+    }
+
+    public Set<String> getVisitedPages() {
+        return visitedPages;
+    }
 
     public boolean wasVisited(String url) {
         return visitedPages.contains(url);
