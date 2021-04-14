@@ -1,10 +1,14 @@
 package crawler.data;
 
+import crawler.misc.Constants;
+import crawler.statistics.Formatter;
 import org.jsoup.nodes.Element;
 
 import java.util.*;
 
+
 public class CrawlResult {
+    private List<Formatter> dataFormatter = new ArrayList<>();
     private long readableTextCount;
     private final Map<String, List<Element>> content = new HashMap<>();
     private final Set<String> notFoundUrls = new HashSet<>();
@@ -49,5 +53,20 @@ public class CrawlResult {
         content.get(key).addAll(entry.getValue());
     }
 
-    private void
+    public void addDataFormatter(Collection<Formatter> formatters) {
+        dataFormatter.addAll(formatters);
+    }
+
+    public void addDataFormatter(Formatter formatter) {
+        dataFormatter.add(formatter);
+    }
+
+    public String getFormattedData() {
+        StringBuilder builder = new StringBuilder();
+        for(Formatter formatter : dataFormatter) {
+            builder.append("Format: ").append(formatter.getClass().getSimpleName()).append(Constants.NEW_LINE)
+                .append(formatter.format(this)).append(Constants.NEW_LINE);
+        }
+        return builder.toString();
+    }
 }

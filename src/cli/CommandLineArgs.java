@@ -1,18 +1,24 @@
 package cli;
 
+import crawler.statistics.DefaultFormatter;
+import crawler.statistics.Formatter;
 import org.apache.commons.cli.*;
 
 import java.nio.file.FileSystems;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CommandLineArgs {
     private final Options options = new Options();
     private final CommandLineParser parser = new DefaultParser();
 
+
     private String startUrl;
     private int depth = 2;
     private int logLevel = 3;
     private String outFilePath = null;
+    private List<Formatter> formatters = new ArrayList<>();
 
     public Options getOptions() {
         return options;
@@ -34,6 +40,10 @@ public class CommandLineArgs {
         return outFilePath;
     }
 
+    public List<Formatter> getFormatters() {
+        return formatters;
+    }
+
     public CommandLineArgs() {
         Option urlOpt = new Option("u", "url", true, "input start url");
         urlOpt.setRequired(true);
@@ -50,6 +60,13 @@ public class CommandLineArgs {
         Option logLevelOpt = new Option("ll", "loglevel", true, "set log level depth");
         logLevelOpt.setRequired(false);
         options.addOption(logLevelOpt);
+
+        Option formattersOpt = new Option("f", "formatter", true,
+                String.format("Formatter [%s],[%s],[%s]", CliFormatterTable.ID_DEFAULT,
+                        CliFormatterTable.ID_NOTFOUND, CliFormatterTable.ID_VISITED));
+        formattersOpt.setArgs(Option.UNLIMITED_VALUES);
+        formattersOpt.setValueSeparator(',');
+        options.addOption(formattersOpt);
     }
 
     public void parse(String[] args) throws ParseException {
@@ -62,6 +79,11 @@ public class CommandLineArgs {
             logLevel = Integer.parseInt(cmd.getOptionValue("ll"));
         if(cmd.hasOption("o"))
             outFilePath = getAbsolutePath(cmd.getOptionValue("o"));
+        if(cmd.hasOption("f"))
+            formatters = CliFormatterTable.parse(cmd.getOptionValues("f"));
+        else
+            formatters.add(new DefaultFormatter());
+
     }
 
     private String getAbsolutePath(String path) {

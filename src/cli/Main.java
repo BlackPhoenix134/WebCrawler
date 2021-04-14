@@ -20,6 +20,7 @@ public class Main {
             Logger.setLogLevel(cliArgs.getLogLevel());
             WebCrawler crawler = new WebCrawler(cliArgs.getStartUrl());
             CrawlResult result = crawler.start(cliArgs.getDepth());
+            result.addDataFormatter(cliArgs.getFormatters());
             printDoneMessage(result);
         } catch (ParseException e) {
             helpFormatter.printHelp("webcrawler", cliArgs.getOptions());
@@ -27,11 +28,7 @@ public class Main {
     }
 
     private static void printDoneMessage(CrawlResult result) {
-        Logger.out("Crawling Finished");
-        Logger.out("Words: " + result.getReadableTextCount());
-        Logger.out("404: " + result.getNotFoundUrls().size());
-        Logger.out("Visited Pages: " + result.getVisitedPages());
-
+        Logger.out(result.getFormattedData());
         if(cliArgs.getOutFilePath() != null)
             writeResultStatistics(result, cliArgs.getOutFilePath());
     }
