@@ -2,6 +2,9 @@ package cli;
 
 import org.apache.commons.cli.*;
 
+import java.nio.file.FileSystems;
+
+
 public class CommandLineArgs {
     private final Options options = new Options();
     private final CommandLineParser parser = new DefaultParser();
@@ -9,6 +12,7 @@ public class CommandLineArgs {
     private String startUrl;
     private int depth = 2;
     private int logLevel = 3;
+    private String outFilePath = null;
 
     public Options getOptions() {
         return options;
@@ -26,6 +30,10 @@ public class CommandLineArgs {
         return logLevel;
     }
 
+    public String getOutFilePath() {
+        return outFilePath;
+    }
+
     public CommandLineArgs() {
         Option urlOpt = new Option("u", "url", true, "input start url");
         urlOpt.setRequired(true);
@@ -35,7 +43,11 @@ public class CommandLineArgs {
         depthOpt.setRequired(false);
         options.addOption(depthOpt);
 
-        Option logLevelOpt = new Option("ll", "logLevel", true, "set log level depth");
+        Option outFileOpt = new Option("o", "outfile", true, "path to output file");
+        outFileOpt.setRequired(false);
+        options.addOption(outFileOpt);
+
+        Option logLevelOpt = new Option("ll", "loglevel", true, "set log level depth");
         logLevelOpt.setRequired(false);
         options.addOption(logLevelOpt);
     }
@@ -48,5 +60,11 @@ public class CommandLineArgs {
             depth = Integer.parseInt(cmd.getOptionValue("d"));
         if(cmd.hasOption("ll"))
             logLevel = Integer.parseInt(cmd.getOptionValue("ll"));
+        if(cmd.hasOption("o"))
+            outFilePath = getAbsolutePath(cmd.getOptionValue("o"));
+    }
+
+    private String getAbsolutePath(String path) {
+        return FileSystems.getDefault().getPath(path).normalize().toAbsolutePath().toString();
     }
 }

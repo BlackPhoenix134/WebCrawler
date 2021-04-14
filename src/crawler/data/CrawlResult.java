@@ -48,4 +48,6 @@ public class CrawlResult {
             content.put(key, new ArrayList<>());
         content.get(key).addAll(entry.getValue());
     }
+
+    private void
 }
