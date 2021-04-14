@@ -19,7 +19,6 @@ public final class CliFormatterTable {
 
     private static Map<String, Formatter> formatterMap = new HashMap<>();
 
-    private static CliFormatterTable initalizer = new CliFormatterTable();
 
     public static List<Formatter> parse(String[] values) throws ParseException {
         List<Formatter> ret = new ArrayList<>();
@@ -36,4 +35,6 @@ public final class CliFormatterTable {
         formatterMap.put(ID_NOTFOUND, new UrlNotFoundFormatter());
         formatterMap.put(ID_VISITED, new VisitedLinksFormatter());
     }
+
+    private static CliFormatterTable initalizer = new CliFormatterTable();
 }
