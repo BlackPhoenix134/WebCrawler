@@ -39,13 +39,7 @@ public class CrawlResultTest {
 
         expectedResult.merge(googleResult);
         expectedResult2.merge(aauResult);
-        System.out.println("result1: " + expectedResult.getReadableTextCount());
-        System.out.println("result2: " +expectedResult2.getReadableTextCount());
-        System.out.println("result1: " + expectedResult.getNotFoundUrls().size());
-        System.out.println("result2: " +expectedResult2.getNotFoundUrls().size());
-        System.out.println("result1: " + expectedResult.getVisitedPages().size());
-        System.out.println("result2: " +expectedResult2.getVisitedPages().size());
-        assertTrue(expectedResult.equals(expectedResult2));
-        //assertEquals(expectedResult, expectedResult2);
+
+        assertEquals(expectedResult, expectedResult2);
     }
 }
