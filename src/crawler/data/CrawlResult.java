@@ -41,14 +41,14 @@ public class CrawlResult {
     public void merge(PageCrawlResult pageResult) {
         readableTextCount += pageResult.getReadableTextCount();
         visitedPages.add(pageResult.getUrl());
-        for(Map.Entry<String, List<Element>> entry : pageResult.getContent().entrySet()) {
+        for (Map.Entry<String, List<Element>> entry : pageResult.getContent().entrySet()) {
             mergeEntry(entry);
         }
     }
 
     private void mergeEntry(Map.Entry<String, List<Element>> entry) {
         String key = entry.getKey();
-        if(!content.containsKey(key))
+        if (!content.containsKey(key))
             content.put(key, new ArrayList<>());
         content.get(key).addAll(entry.getValue());
     }
@@ -63,10 +63,19 @@ public class CrawlResult {
 
     public String getFormattedData() {
         StringBuilder builder = new StringBuilder();
-        for(Formatter formatter : dataFormatter) {
+        for (Formatter formatter : dataFormatter) {
             builder.append("Format: ").append(formatter.getClass().getSimpleName()).append(Constants.NEW_LINE)
-                .append(formatter.format(this)).append(Constants.NEW_LINE);
+                    .append(formatter.format(this)).append(Constants.NEW_LINE);
         }
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        CrawlResult toCompare = (CrawlResult) obj;
+        return toCompare.getContent().size() == this.content.size()
+                && toCompare.notFoundUrls.size() == this.notFoundUrls.size()
+                && toCompare.visitedPages.size() == this.visitedPages.size()
+                && toCompare.readableTextCount == this.readableTextCount;
     }
 }
