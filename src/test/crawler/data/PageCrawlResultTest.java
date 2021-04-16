@@ -2,7 +2,6 @@ package crawler.data;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import crawler.data.PageCrawlResult;
 import org.jsoup.nodes.Element;
 import org.junit.After;
 import org.junit.Before;

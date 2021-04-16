@@ -1,11 +1,7 @@
 package crawler.data;
 
-import crawler.data.CrawlResult;
-import crawler.data.PageCrawlResult;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -14,15 +10,6 @@ import static org.junit.Assert.*;
 
 public class CrawlResultTest {
 
-    private CrawlResult crawlResult;
-    @Before
-    public void init() {
-        crawlResult = new CrawlResult();
-    }
-    @After
-    public void destroy() {
-        crawlResult = null;
-    }
 
     @Test
     public void testMergeEntry() throws IOException {
