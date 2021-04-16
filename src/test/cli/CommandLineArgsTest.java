@@ -39,4 +39,16 @@ public class CommandLineArgsTest {
         assertEquals(filePath, commandLineArgs.getOutFilePath());
         assertEquals(2, commandLineArgs.getLogLevel());
     }
+    @Test
+    public void checkLongArgs() throws ParseException {
+        String testUrl = "https://www.aau.at";
+        int depth = 2;
+        String filePath = "/test/example";
+        String[] args = {"-url", testUrl, "-depth", depth+"", "-outfile", filePath, "-loglevel", 2+""};
+        commandLineArgs.parse(args);
+        assertEquals(testUrl, commandLineArgs.getStartUrl());
+        assertEquals(depth, commandLineArgs.getDepth());
+        assertEquals(filePath, commandLineArgs.getOutFilePath());
+        assertEquals(2, commandLineArgs.getLogLevel());
+    }
 }

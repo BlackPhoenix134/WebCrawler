@@ -1,4 +1,4 @@
-package test.crawler.data;
+package crawler.data;
 
 import crawler.data.CrawlResult;
 import crawler.data.PageCrawlResult;

@@ -6,7 +6,6 @@ import crawler.statistics.UrlNotFoundFormatter;
 import crawler.statistics.VisitedLinksFormatter;
 import org.apache.commons.cli.ParseException;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

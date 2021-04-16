@@ -1,4 +1,4 @@
-package test.crawler.data;
+package crawler.data;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
