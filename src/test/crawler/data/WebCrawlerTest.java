@@ -1,20 +1,13 @@
 package crawler.data;
 
-import crawler.data.CrawlResult;
-import crawler.data.PageCrawlResult;
-import crawler.data.WebCrawler;
 import crawler.log.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.junit.jupiter.api.Assertions;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.PrintStream;
 
 import static org.junit.Assert.*;
 
@@ -22,18 +15,22 @@ public class WebCrawlerTest {
 
     private final String URL = "https://jsoup.org/cookbook/input/load-document-from-url";
     private final String URL2 = "https://www.aau.at";
-    private Document TEST_DOC;
     private WebCrawler webCrawler;
     private WebCrawler webCrawler2;
     private WebCrawler webCrawler3;
-    private Map<String, List<Element>> exampleMap = new HashMap<>();
 
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
 
     @Before
     public void init() throws IOException {
+        System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
         // needs to be set, otherwise it throws an exception.
         Logger.setLogFunction(System.out::println);
-        TEST_DOC = Jsoup.connect(URL).get();
+
         webCrawler = new WebCrawler(URL);
         webCrawler2 = new WebCrawler(URL);
         webCrawler3 = new WebCrawler(URL2);
@@ -41,11 +38,28 @@ public class WebCrawlerTest {
     @After
     public void destroy() {
         webCrawler = null;
+        System.setOut(originalOut);
+        System.setErr(originalErr);
     }
     @Test
     public void checkCrawlResult() {
         assertEquals(webCrawler.start(), webCrawler2.start());
         assertNotEquals(webCrawler3.start(), webCrawler.start());
     }
+    @Test
+    public void malformedUrlTest() {
+        webCrawler = new WebCrawler("noURL");
 
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            webCrawler.start();
+        });
+    }
+
+    @Test
+    public void checkCrawlerOutputError() {
+        webCrawler = new WebCrawler("https://www.noUrl.at");
+        webCrawler.start();
+        assertEquals("Info:\tAccessing: https://www.noUrl.at\nError:\tError connecting to url www.noUrl.at\n", outContent.toString());
+
+    }
 }
