@@ -8,48 +8,40 @@ import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
-//ToDo: probably  async for larger crawls
-//ToDo: if async, stop/continue functionality
-public class WebCrawler {
-    private String starUrl;
+public class WebCrawler implements Runnable {
+    private List<String> urls;
+    private int depth;
+    private Consumer<CrawlResult> onFinished;
 
-    public WebCrawler(String startUrl) {
-        this.starUrl = startUrl;
+    public WebCrawler(List<String> urls, int depth, Consumer<CrawlResult> onFinished) {
+        this.urls = urls;
+        this.depth = depth;
+        this.onFinished = onFinished;
     }
 
-    public CrawlResult start() {
-        return start(1);
-    }
-
-    public CrawlResult start(int depth) {
-        CrawlResult result = new CrawlResult();
-        crawlRecursive(starUrl, depth, result);
-        return result;
-    }
-
-    private void crawlRecursive(String url, int depth, CrawlResult result) {
-        Document doc = null;
-        try {
-            Logger.information("Accessing: " + url);
-            doc = getDocument(url);
-            PageCrawlResult pageResult = new PageCrawlResult(url, doc);
-            result.merge(pageResult);
-
-            if(depth >= 0) {
-                for(String link : pageResult.getAbsoluteLinks()) {
-                    if(!result.wasVisited(link))
-                        crawlRecursive(link, depth-1, result);
-                }
-            }
-        } catch (HttpStatusException e) {
-            result.addNotFoundUrl(url);
-        } catch (IOException e) {
-            Logger.error("Error connecting to url " + e.getMessage());
+    @Override
+    public void run() {
+        CrawlResult crawlResult = new CrawlResult();
+        List<Thread> threads = new ArrayList<>();
+        for(String url : urls) {
+            Thread thread = new Thread(new PageCrawlerInstance(url, crawlResult, depth));
+            threads.add(thread);
+            thread.start();
         }
+        awaitAll(threads);
     }
 
-    private Document getDocument(String url) throws IOException, HttpStatusException {
-        return Jsoup.connect(url).get();
+    private void awaitAll( List<Thread> threads) {
+        for(Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException ignore) {
+                ignore.printStackTrace();
+            }
+        }
     }
 }

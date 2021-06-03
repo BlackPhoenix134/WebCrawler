@@ -34,11 +34,11 @@ public class CrawlResult {
         return visitedPages.contains(url);
     }
 
-    public void addNotFoundUrl(String url) {
+    public synchronized void addNotFoundUrl(String url) {
         notFoundUrls.add(url);
     }
 
-    public void merge(PageCrawlResult pageResult) {
+    public synchronized void merge(PageCrawlResult pageResult) {
         readableTextCount += pageResult.getReadableTextCount();
         visitedPages.add(pageResult.getUrl());
         for (Map.Entry<String, List<Element>> entry : pageResult.getContent().entrySet()) {
@@ -46,18 +46,18 @@ public class CrawlResult {
         }
     }
 
-    private void mergeEntry(Map.Entry<String, List<Element>> entry) {
+    private synchronized void mergeEntry(Map.Entry<String, List<Element>> entry) {
         String key = entry.getKey();
         if (!content.containsKey(key))
             content.put(key, new ArrayList<>());
         content.get(key).addAll(entry.getValue());
     }
 
-    public void addDataFormatter(Collection<Formatter> formatters) {
+    public synchronized void addDataFormatter(Collection<Formatter> formatters) {
         dataFormatter.addAll(formatters);
     }
 
-    public void addDataFormatter(Formatter formatter) {
+    public synchronized void addDataFormatter(Formatter formatter) {
         dataFormatter.add(formatter);
     }
 

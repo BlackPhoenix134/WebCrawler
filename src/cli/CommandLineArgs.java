@@ -6,6 +6,7 @@ import org.apache.commons.cli.*;
 
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -13,8 +14,7 @@ public class CommandLineArgs {
     private final Options options = new Options();
     private final CommandLineParser parser = new DefaultParser();
 
-
-    private String startUrl;
+    private List<String> startUrls;
     private int depth = 2;
     private int logLevel = 3;
     private String outFilePath = null;
@@ -24,8 +24,8 @@ public class CommandLineArgs {
         return options;
     }
 
-    public String getStartUrl() {
-        return startUrl;
+    public List<String> getStartUrls() {
+        return startUrls;
     }
 
     public int getDepth() {
@@ -45,8 +45,10 @@ public class CommandLineArgs {
     }
 
     public CommandLineArgs() {
-        Option urlOpt = new Option("u", "url", true, "input start url");
+        Option urlOpt = new Option("u", "url",  true, "input urls");
+        urlOpt.setArgs(Option.UNLIMITED_VALUES);
         urlOpt.setRequired(true);
+        urlOpt.setValueSeparator(',');
         options.addOption(urlOpt);
 
         Option depthOpt = new Option("d", "depth", true, "set crawl depth");
@@ -72,7 +74,7 @@ public class CommandLineArgs {
     public void parse(String[] args) throws ParseException {
         CommandLine cmd;
         cmd = parser.parse(options, args);
-        startUrl = cmd.getOptionValue("u");
+        startUrls = parseUrls("u");
         if(cmd.hasOption("d"))
             depth = Integer.parseInt(cmd.getOptionValue("d"));
         if(cmd.hasOption("ll"))
@@ -84,6 +86,10 @@ public class CommandLineArgs {
         else
             formatters.add(new DefaultFormatter());
 
+    }
+
+    private List<String> parseUrls(String urls) {
+        return Arrays.asList(urls.split(","));
     }
 
     private String getAbsolutePath(String path) {
