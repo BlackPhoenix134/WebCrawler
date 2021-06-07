@@ -25,20 +25,25 @@ public abstract class Logger {
 
     public static void information(String message) {
         if(LogLevel > 2)
-            logFunction.accept("Info:\t" + message);
+            callLog("Info:\t" + message);
     }
 
     public static void debug(String message) {
         if(LogLevel > 1)
-            logFunction.accept("Debug:\t" + message);
+            callLog("Debug:\t" + message);
     }
 
     public static void error(String message) {
         if(LogLevel > 0)
-            logFunction.accept("Error:\t" + message);
+            callLog("Error:\t" + message);
     }
 
     public static void out(String message) {
-        logFunction.accept(message);
+        callLog(message);
+    }
+
+    private static void callLog(String message) {
+        if(logFunction != null)
+            logFunction.accept(message);
     }
 }
