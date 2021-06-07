@@ -74,7 +74,7 @@ public class CommandLineArgs {
     public void parse(String[] args) throws ParseException {
         CommandLine cmd;
         cmd = parser.parse(options, args);
-        startUrls = parseUrls("u");
+        startUrls = Arrays.asList(cmd.getOptionValues("u"));
         if(cmd.hasOption("d"))
             depth = Integer.parseInt(cmd.getOptionValue("d"));
         if(cmd.hasOption("ll"))
