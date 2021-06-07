@@ -1,5 +1,6 @@
 package crawler.data;
 
+import crawler.log.Logger;
 import crawler.misc.Constants;
 import crawler.statistics.Formatter;
 import org.jsoup.nodes.Element;

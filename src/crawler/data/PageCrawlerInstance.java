@@ -11,14 +11,17 @@ public class PageCrawlerInstance implements Runnable {
     private String starUrl;
     private CrawlResult crawlResult;
     private int depth;
+    private int id;
 
-    public PageCrawlerInstance(String startUrl, CrawlResult crawlResult) {
-        this(startUrl, crawlResult, 1);
+    public PageCrawlerInstance(int id, String startUrl, CrawlResult crawlResult) {
+        this(id, startUrl, crawlResult, 1);
     }
 
-    public PageCrawlerInstance(String startUrl, CrawlResult crawlResult, int depth) {
+    public PageCrawlerInstance(int id, String startUrl, CrawlResult crawlResult, int depth) {
+        this.id = id;
         this.starUrl = startUrl;
         this.crawlResult = crawlResult;
+        this.depth = depth;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class PageCrawlerInstance implements Runnable {
     private void crawlRecursive(String url, int depth, CrawlResult result) {
         Document doc = null;
         try {
-            Logger.information("Accessing: " + url);
+            Logger.information("Thread " + id +" Accessing: " + url);
             doc = getDocument(url);
             PageCrawlResult pageResult = new PageCrawlResult(url, doc);
             result.merge(pageResult);

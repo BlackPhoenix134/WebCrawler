@@ -27,11 +27,13 @@ public class WebCrawler implements Runnable {
     public void run() {
         CrawlResult crawlResult = new CrawlResult();
         List<Thread> threads = new ArrayList<>();
-        for(String url : urls) {
-            Thread thread = new Thread(new PageCrawlerInstance(url, crawlResult, depth));
+
+        for(int i = 0; i < urls.size(); i++) {
+            Thread thread = new Thread(new PageCrawlerInstance(i, urls.get(0), crawlResult, depth));
             threads.add(thread);
             thread.start();
         }
+        Logger.information("Awaiting " + urls.size() + " threads");
         awaitAll(threads);
     }
 
