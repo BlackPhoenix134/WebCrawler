@@ -14,7 +14,7 @@ public class CommandLineArgs {
     private final Options options = new Options();
     private final CommandLineParser parser = new DefaultParser();
 
-    private List<String> startUrls;
+    private List<String> startUrls = new ArrayList<>();
     private int depth = 2;
     private int logLevel = 3;
     private String outFilePath = null;

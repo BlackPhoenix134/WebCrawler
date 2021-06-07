@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         crawler.data.CrawlResultTest.class,
         crawler.data.PageCrawlResultTest.class,
-        crawler.data.WebCrawlerTest.class,
+       // crawler.data.WebCrawlerTest.class,
         CommandLineArgsTest.class
 
 })
