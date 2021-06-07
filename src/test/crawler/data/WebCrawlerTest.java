@@ -1,8 +1,11 @@
 package test.crawler.data;
 
 import crawler.data.CrawlResult;
+import crawler.data.PageCrawlResult;
 import crawler.data.WebCrawler;
 import crawler.log.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,23 +43,53 @@ public class WebCrawlerTest {
     }
 
     @Test
-    public void checkCrawlResult() {
+    public void checkCrawlResult() throws InterruptedException {
         AtomicReference<CrawlResult> atomicResult1 = new AtomicReference<>(new CrawlResult());
         AtomicReference<CrawlResult> atomicResult2 = new AtomicReference<>(new CrawlResult());
         Thread t1 = new Thread(new WebCrawler(URL, 1, (atomicResult1::set)));
         Thread t2 = new Thread(new WebCrawler(URL, 1, (atomicResult2::set)));
         t1.start();
         t2.start();
-        try {
-            t1.join();
-            t2.join();
-        } catch (InterruptedException e) {
-            assertTrue(false);
-        }
+        t1.join();
+        t2.join();
         CrawlResult result1 = atomicResult1.get();
         CrawlResult result2 = atomicResult2.get();
-        assertEquals(result1.getNotFoundUrls().size(), result2.getNotFoundUrls().size());
+        compareCrawlResults(result1, result2);
+    }
 
+
+    @Test
+    public void criticalSectionMerge() throws IOException, InterruptedException {
+        Document TEST_DOC1 = Jsoup.connect("https://www.aau.at").get();
+        Document TEST_DOC2 = Jsoup.connect("https://www.google.at").get();
+
+        PageCrawlResult pageResult1 = new PageCrawlResult("https://www.aau.at", TEST_DOC1);
+        PageCrawlResult pageResult2 = new PageCrawlResult("https://www.aau.at", TEST_DOC2);
+
+        CrawlResult syncronizedResult = new CrawlResult();
+        CrawlResult concurrentResult = new CrawlResult();
+
+        syncronizedResult.merge(pageResult1);
+        syncronizedResult.merge(pageResult2);
+
+        Thread t1 = new Thread(() -> {
+            concurrentResult.merge(pageResult1);
+        });
+
+        Thread t2 = new Thread(() -> {
+            concurrentResult.merge(pageResult2);
+        });
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
+        compareCrawlResults(syncronizedResult, concurrentResult);
+    }
+
+    private void compareCrawlResults(CrawlResult result1, CrawlResult result2) {
+        assertEquals(result1.getNotFoundUrls().size(), result2.getNotFoundUrls().size());
         for(int i = 0; i < result1.getNotFoundUrls().size(); i++) {
             assertTrue(result2.getNotFoundUrls().contains(result1.getNotFoundUrls().toArray()[i]));
             assertTrue(result1.getNotFoundUrls().contains(result2.getNotFoundUrls().toArray()[i]));
