@@ -35,6 +35,7 @@ public class WebCrawler implements Runnable {
         }
         Logger.information("Awaiting " + urls.size() + " threads");
         awaitAll(threads);
+        onFinished.accept(crawlResult);
     }
 
     private void awaitAll( List<Thread> threads) {
