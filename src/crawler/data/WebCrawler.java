@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -16,6 +17,10 @@ public class WebCrawler implements Runnable {
     private List<String> urls;
     private int depth;
     private Consumer<CrawlResult> onFinished;
+
+    public WebCrawler(String url, int depth, Consumer<CrawlResult> onFinished) {
+        this(Collections.singletonList(url), depth, onFinished);
+    }
 
     public WebCrawler(List<String> urls, int depth, Consumer<CrawlResult> onFinished) {
         this.urls = urls;

@@ -1,5 +1,6 @@
-package crawler.data;
+package test.crawler.data;
 
+import crawler.data.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.junit.Test;
@@ -9,8 +10,6 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 
 public class CrawlResultTest {
-
-
     @Test
     public void testMergeEntry() throws IOException {
         Document TEST_DOC1 = Jsoup.connect("https://www.aau.at").get();
