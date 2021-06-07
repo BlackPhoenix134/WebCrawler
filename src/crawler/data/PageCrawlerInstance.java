@@ -2,25 +2,24 @@ package crawler.data;
 
 import crawler.log.Logger;
 import org.jsoup.HttpStatusException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import java.io.IOException;
 
 public class PageCrawlerInstance implements Runnable {
+    private int id;
     private String starUrl;
     private CrawlResult crawlResult;
+    private WebProcessor webProcessor;
     private int depth;
-    private int id;
 
-    public PageCrawlerInstance(int id, String startUrl, CrawlResult crawlResult) {
-        this(id, startUrl, crawlResult, 1);
+    public PageCrawlerInstance(int id, String startUrl, CrawlResult crawlResult, WebProcessor webProcessor) {
+        this(id, startUrl, crawlResult, webProcessor, 1);
     }
 
-    public PageCrawlerInstance(int id, String startUrl, CrawlResult crawlResult, int depth) {
+    public PageCrawlerInstance(int id, String startUrl, CrawlResult crawlResult,  WebProcessor webProcessor, int depth) {
         this.id = id;
         this.starUrl = startUrl;
         this.crawlResult = crawlResult;
+        this.webProcessor = webProcessor;
         this.depth = depth;
     }
 
@@ -30,11 +29,9 @@ public class PageCrawlerInstance implements Runnable {
     }
 
     private void crawlRecursive(String url, int depth, CrawlResult result) {
-        Document doc = null;
         try {
             Logger.information("Thread " + id +" Accessing: " + url);
-            doc = getDocument(url);
-            PageCrawlResult pageResult = new PageCrawlResult(url, doc);
+            PageCrawlResult pageResult = webProcessor.getPageCrawlResult(url);
             result.merge(pageResult);
 
             if(depth >= 0) {
@@ -50,7 +47,4 @@ public class PageCrawlerInstance implements Runnable {
         }
     }
 
-    private Document getDocument(String url) throws IOException {
-        return Jsoup.connect(url).get();
-    }
 }

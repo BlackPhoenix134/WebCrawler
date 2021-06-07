@@ -27,9 +27,12 @@ public class PageCrawlResult {
         return content;
     }
 
-    public PageCrawlResult(String url, Document doc) {
+    public PageCrawlResult(String url) {
         this.url = url;
-        parse(doc);
+    }
+
+    void setReadableTextCount(long readableTextCount) {
+        this.readableTextCount = readableTextCount;
     }
 
     public List<String> getAbsoluteLinks() {
@@ -43,16 +46,7 @@ public class PageCrawlResult {
         return urls;
     }
 
-    private void parse(Document doc) {
-        Elements elements = doc.getAllElements();
-        readableTextCount += doc.text().split(" ").length;
-        for(Element element  : elements) {
-            //ToDo: check if text node
-            addContent(element);
-        }
-    }
-
-    private void addContent(Element element) {
+    void addContent(Element element) {
         String key = element.nodeName();
         if(!content.containsKey(key))
             content.put(key, new ArrayList<>());

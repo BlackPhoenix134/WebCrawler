@@ -1,8 +1,6 @@
 package test.crawler.data;
 
-import crawler.data.CrawlResult;
-import crawler.data.PageCrawlResult;
-import crawler.data.WebCrawler;
+import crawler.data.*;
 import crawler.log.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,9 +18,7 @@ import static org.junit.Assert.*;
 public class WebCrawlerTest {
     private final String URL = "https://jsoup.org/cookbook/input/load-document-from-url";
     private final String URL2 = "https://www.aau.at";
-    private WebCrawler webCrawler;
-    private WebCrawler webCrawler2;
-    private WebCrawler webCrawler3;
+    private WebProcessor webProcessor = new JsoupWebProcessor();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
@@ -37,7 +33,6 @@ public class WebCrawlerTest {
     }
     @After
     public void destroy() {
-        webCrawler = null;
         System.setOut(originalOut);
         System.setErr(originalErr);
     }
@@ -46,8 +41,8 @@ public class WebCrawlerTest {
     public void checkCrawlResult() throws InterruptedException {
         AtomicReference<CrawlResult> atomicResult1 = new AtomicReference<>(new CrawlResult());
         AtomicReference<CrawlResult> atomicResult2 = new AtomicReference<>(new CrawlResult());
-        Thread t1 = new Thread(new WebCrawler(URL, 1, (atomicResult1::set)));
-        Thread t2 = new Thread(new WebCrawler(URL, 1, (atomicResult2::set)));
+        Thread t1 = new Thread(new WebCrawler(URL, webProcessor, 1, (atomicResult1::set)));
+        Thread t2 = new Thread(new WebCrawler(URL, webProcessor, 1, (atomicResult2::set)));
         t1.start();
         t2.start();
         t1.join();
@@ -63,8 +58,8 @@ public class WebCrawlerTest {
         Document TEST_DOC1 = Jsoup.connect("https://www.aau.at").get();
         Document TEST_DOC2 = Jsoup.connect("https://www.google.at").get();
 
-        PageCrawlResult pageResult1 = new PageCrawlResult("https://www.aau.at", TEST_DOC1);
-        PageCrawlResult pageResult2 = new PageCrawlResult("https://www.aau.at", TEST_DOC2);
+        PageCrawlResult pageResult1 = webProcessor.getPageCrawlResult("https://www.aau.at");
+        PageCrawlResult pageResult2 = webProcessor.getPageCrawlResult("https://www.google.at");
 
         CrawlResult syncronizedResult = new CrawlResult();
         CrawlResult concurrentResult = new CrawlResult();

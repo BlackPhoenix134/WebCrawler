@@ -25,7 +25,7 @@ public class PageCrawlResultTest {
     @Before
     public void init() throws IOException {
         TEST_DOC = Jsoup.connect(URL).get();
-        pageCrawlResult = new PageCrawlResult(URL, TEST_DOC);
+        pageCrawlResult = new JsoupWebProcessor().getPageCrawlResult(URL);
     }
     @After
     public void destroy() {

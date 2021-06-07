@@ -1,9 +1,11 @@
 package cli;
 
 import crawler.data.CrawlResult;
+import crawler.data.JsoupWebProcessor;
 import crawler.data.WebCrawler;
 import crawler.log.Logger;
 import org.apache.commons.cli.*;
+import org.jsoup.Jsoup;
 
 import java.io.File;
 import java.util.Arrays;
@@ -19,9 +21,10 @@ public class Main {
         try {
             cliArgs.parse(args);
             Logger.setLogLevel(cliArgs.getLogLevel());
-            Thread crawlThread = new Thread(new WebCrawler(cliArgs.getStartUrls(), cliArgs.getDepth(), (crawlResult) -> {
-                crawlResult.addDataFormatter(cliArgs.getFormatters());
-                printCrawlResult(crawlResult);
+            Thread crawlThread = new Thread(new WebCrawler(cliArgs.getStartUrls(),  new JsoupWebProcessor(), cliArgs.getDepth(),
+                (crawlResult) -> {
+                    crawlResult.addDataFormatter(cliArgs.getFormatters());
+                    printCrawlResult(crawlResult);
             }));
             crawlThread.start();
         } catch (ParseException e) {
